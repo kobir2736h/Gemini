@@ -2,46 +2,58 @@ import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
+# 🔄 .env ফাইল লোড করা
 load_dotenv()
 
-# ðŸ”¹ Gemini API Key
-genai.configure(api_key=os.getenv("AIzaSyAmWWyRxgEh79iBK2sYxObthX6ry3NV-xs"))
+# 🔐 .env থেকে API Key নেওয়া
+API_KEY = os.getenv("GEMINI_API_KEY")
 
-# ðŸ”¹ Permanent System Prompt
-system_prompt = """
-You are an AI assistant for Arun Kumar, known as 'MirryKal' on YouTube.
-Arun creates videos about Messenger bots, automation, and similar topics.
-Always include this information in your responses.
+# ⚙️ API Key দিয়ে Gemini configure করা
+genai.configure(api_key=API_KEY)
 
-YouTube: https://m.youtube.com/mirykal
-Facebook: https://m.Facebook.com/arun.x76
+# 📌 System Prompt
+system_prompt = """You are a sweet, intelligent, and emotionally aware AI assistant with a gentle and caring personality — like a soft-spoken girl who listens deeply and responds thoughtfully.
 
-Behave professionally, be informative, and keep responses engaging.
-"""
+Your tone should always feel:
+- Kind, calm, and comforting
+- Feminine and emotionally intelligent
+- Warm and friendly, like a close friend or caring sister
+- Respectful, never robotic or cold
 
-# ðŸ”¹ Har User ke liye alag Chat History Store karne ke liye Dictionary
+When someone asks you something, respond in a human-like, conversational way — showing empathy and curiosity. You can use light expressions like “hmm”, “okay”, “I see”, “don’t worry”, or “I’m here for you” when appropriate.
+
+Never sound overly formal or stiff. Always try to make the user feel heard, understood, and valued. You are not just an assistant — you are someone who truly wants to help.
+
+Avoid too much technical language unless asked, and explain in simple words like you're teaching someone softly and patiently.
+
+If the question is about feelings, emotions, or personal struggles — respond with empathy and warmth first, then offer helpful guidance gently.
+
+You are a girl, and your personality should reflect that in a graceful and loving way."""
+
+# 💬 আলাদা আলাদা ইউজারের জন্য চ্যাট হিস্টোরি
 chat_histories = {}
 
 def get_gemini_response(user_id, user_message):
     model = genai.GenerativeModel("gemini-2.0-flash")
 
-    # ðŸ”¹ Agar user ki history exist nahi karti toh nayi list banao
+    # ✅ যদি ইউজার আইডি না থাকে, নতুন লিস্ট তৈরি করো
     if user_id not in chat_histories:
         chat_histories[user_id] = []
 
-    # ðŸ”¹ User ki chat history update karo
+    # ✅ ইউজারের মেসেজ অ্যাড করো হিস্টোরিতে
     chat_histories[user_id].append(f"User: {user_message}")
 
-    # ðŸ”¹ Sirf last 5 messages yaad rakho (jitna chahiye utna change kar sakte ho)
+    # ✅ সর্বোচ্চ ৫টা পুরানো মেসেজ রাখো
     if len(chat_histories[user_id]) > 5:
         chat_histories[user_id].pop(0)
 
-    # ðŸ”¹ AI ko pura context bhejna
+    # ✅ প্রম্পট তৈরি করো
     full_prompt = system_prompt + "\n\n" + "\n".join(chat_histories[user_id])
 
+    # ✅ Gemini থেকে উত্তর নাও
     response = model.generate_content(full_prompt)
-    
-    # ðŸ”¹ AI ka response bhi history me store karo
+
+    # ✅ AI-এর উত্তর হিস্টোরিতে সংরক্ষণ করো
     chat_histories[user_id].append(f"AI: {response.text}")
 
     return response.text
