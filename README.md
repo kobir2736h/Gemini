@@ -10,3 +10,8 @@ A simple REST API built with **Express.js** and **yt-dlp** that can extract **di
 ---
 
 ## 🚀 Live API Demo (if deployed)
+
+
+start command 
+
+bash build.sh && npm start
