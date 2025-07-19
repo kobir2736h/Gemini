@@ -1,13 +1,12 @@
-##How To setup
-search on google
-google ai studio 
-get apikey
-app.py me jao > 👉🏻👉🏻aapki apikey 👈🏻👈🏻
-isme apni api key daalo
-same .env me
-same gemini.py me 
-now deploy on render
+# 🎬 Multi-Site Video Downloader API (yt-dlp based)
 
-start command is
+A simple REST API built with **Express.js** and **yt-dlp** that can extract **direct download links** from:
+- 📺 YouTube
+- 📱 TikTok
+- 📷 Instagram
+- 📘 Facebook
+- and more (supported by yt-dlp)
 
-python app.py
+---
+
+## 🚀 Live API Demo (if deployed)
