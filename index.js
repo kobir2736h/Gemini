@@ -8,37 +8,35 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Root route - API running test
+// yt-dlp লোকাল path
+const ytdlpPath = './bin/yt-dlp';
+
+// Root route (test)
 app.get("/", (req, res) => {
   res.send("✅ Video Downloader API is running!");
 });
 
-// POST /api/download
+// POST /api/download route
 app.post('/api/download', (req, res) => {
   const { url } = req.body;
 
-  // Input check
-  if (!url) {
-    return res.status(400).json({ error: '❌ URL is missing in request body' });
-  }
+  if (!url) return res.status(400).json({ error: 'URL is required' });
 
-  // yt-dlp command to get direct video link
-  exec(`yt-dlp -f best -g "${url}"`, (err, stdout, stderr) => {
+  // yt-dlp কমান্ড লোকাল path দিয়ে চালাও
+  exec(`${ytdlpPath} -f best -g "${url}"`, (err, stdout, stderr) => {
     if (err || !stdout.trim()) {
-      return res.status(500).json({ error: stderr || "⚠️ Failed to fetch video link" });
+      return res.status(500).json({ error: stderr || 'Failed to get video URL' });
     }
 
-    // stdout = direct video URL
     const videoUrl = stdout.trim().split('\n')[0];
 
     res.json({
-      status: "success",
+      status: 'success',
       videoUrl
     });
   });
 });
 
-// Start server
 app.listen(port, () => {
-  console.log(`🚀 Server is running on port ${port}`);
+  console.log(`🚀 Server running on port ${port}`);
 });
